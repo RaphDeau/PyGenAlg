@@ -1,0 +1,9 @@
+#!bin/ksh
+
+PYGENALG_DIR=$(pwd)
+
+PATH_TO_ADD=$PYGENALG_DIR/sources/
+if ! echo $PYTHONPATH | grep $PATH_TO_ADD > /dev/null
+then
+  export PYTHONPATH=$PATH_TO_ADD:$PYTHONPATH
+fi
