@@ -28,9 +28,6 @@ from PyGenAlg.standards.PYGA_StandardGenAlgBehavior import PYGA_StandardGenAlgBe
 
 
 class PYGA_GenAlg:
-    """
-    TODO:
-    """
 
     DEBUG_MODE = False
     # ==================
