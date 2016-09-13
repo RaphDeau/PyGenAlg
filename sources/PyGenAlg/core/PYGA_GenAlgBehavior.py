@@ -15,6 +15,10 @@
 #
 #-----------------------
 
+from sys import version_info
+if version_info[0] >= 3:
+    unicode = str
+
 from PyParamManager.PYPM_ParamManager import PYPM_ParamManager
 
 from lxml import etree
@@ -54,7 +58,7 @@ class PYGA_GenAlgBehavior(object):
                 if paramLabel not in cls.ALL_PARAMS:
                     cls.ALL_PARAMS.append(paramLabel)
                 else:
-                    raise PYGA_ParametersError, "ERROR: Parameter " + unicode(paramLabel) + " defined twice."
+                    raise PYGA_ParametersError("ERROR: Parameter " + unicode(paramLabel) + " defined twice.")
 
     def __init__(self, individualClass, populationClass, debugMode, outputPrint):
         self.addParamFile(self.__paramsFile)
@@ -101,31 +105,31 @@ class PYGA_GenAlgBehavior(object):
         return self.__populationClass(self.__individualClass, self, self.DEBUG_MODE, self._outputPrint)
 
     def initPopulation(self, population, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.initPopulation) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.initPopulation) must be defined in derived class.')
 
     def generateIndiv(self):
         return self.__individualClass.generate()
 
     def generationStop(self, iGeneration, population, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.generationStop) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.generationStop) must be defined in derived class.')
 
     def stopCriteria(self, population, iGeneration, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.stopCriteria) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.stopCriteria) must be defined in derived class.')
 
     def startOfGeneration(self, population, iGeneration, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.startOfGeneration) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.startOfGeneration) must be defined in derived class.')
 
     def endOfGeneration(self, population, iGeneration, endOfRun, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.endOfGeneration) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.endOfGeneration) must be defined in derived class.')
  
     def selection(self, population, nbIndivToSelect, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.selection) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.selection) must be defined in derived class.')
 
     def reproduction(self, population, nbCrossInd, nbMutInd, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.reproduction) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.reproduction) must be defined in derived class.')
 
     def biasReproductionSelection(self, individuals, nbToSelect):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.biasReproductionSelection) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.biasReproductionSelection) must be defined in derived class.')
 
     def individualCrossover(self, parent1, parent2):
         return self.__individualClass.crossover(parent1, parent2)
@@ -143,10 +147,10 @@ class PYGA_GenAlgBehavior(object):
         return self.__individualClass.individualSearchSpaceInfo()
 
     def selfOptimize(self, population, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.selfOptimize) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.selfOptimize) must be defined in derived class.')
 
     def optimise(self, population, infoStr):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (GenAlgBehavior.optimise) must be defined in derived class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (GenAlgBehavior.optimise) must be defined in derived class.')
 
     def getParamFromKeyword(self, keyword):
         return self.__paramManager.getParamFromKeyword(keyword)

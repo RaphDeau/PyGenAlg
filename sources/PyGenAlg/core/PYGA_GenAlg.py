@@ -50,11 +50,11 @@ class PYGA_GenAlg:
         
         # 1- Check given classes
         if not issubclass(individualClass, PYGA_Individual):
-            raise PYGA_CreationError, 'ERROR: individual class must inherit from PYGA_Individual'
+            raise PYGA_CreationError('ERROR: individual class must inherit from PYGA_Individual')
         if not issubclass(genAlgBehaviorClass, PYGA_GenAlgBehavior):
-            raise PYGA_CreationError, 'ERROR: behavior class must inherit from PYGA_GenAlgBehavior'
+            raise PYGA_CreationError('ERROR: behavior class must inherit from PYGA_GenAlgBehavior')
         if not issubclass(populationClass, PYGA_Population):
-            raise PYGA_CreationError, 'ERROR: population class must inherit from PYGA_Population'
+            raise PYGA_CreationError('ERROR: population class must inherit from PYGA_Population')
         
         # 2- Store class information
         self.__genAlgBehavior = genAlgBehaviorClass(individualClass, populationClass, debugMode, outputPrint)

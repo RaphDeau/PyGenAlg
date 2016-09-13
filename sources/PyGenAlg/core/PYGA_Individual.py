@@ -15,6 +15,10 @@
 #
 #-----------------------
 
+from sys import version_info
+if version_info[0] >= 3:
+    unicode = str
+
 from multiprocessing import Process
 
 from PyGenAlg.core.PYGA_Exceptions import PYGA_MethodMustBeOverloaded
@@ -33,7 +37,7 @@ class PYGA_Individual(object):
         paramLabel = cls.__behav.getParamFromKeyword(paramName)
         if paramLabel is None:
             # TODO: Exception
-            raise Exception, u"Unkown parameter " + unicode(paramName)
+            raise Exception(u"Unkown parameter " + unicode(paramName))
         return cls.__behav.getParam(paramLabel)
 
     def __init__(self):
@@ -48,24 +52,24 @@ class PYGA_Individual(object):
         @return: The generated individual
         @rtype: Individual 
         """
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.generate) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.generate) must be defined in derivated class.')
 
     def saveIndividual(self, fid):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.saveIndividual) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.saveIndividual) must be defined in derivated class.')
         
     @classmethod
     def loadIndividual(cls, fid):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.loadIndividual) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.loadIndividual) must be defined in derivated class.')
 
     @classmethod
     def parseIndividual(cls, indivStruct):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.parseIndividual) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.parseIndividual) must be defined in derivated class.')
 
     def fitness(self, population):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.fitness) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.fitness) must be defined in derivated class.')
 
     def objectives(self, population):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.objectives) must be defined in derivated class.'      
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.objectives) must be defined in derivated class.')
 
     def needCompute(self):
         return self.__fitness is None
@@ -95,7 +99,7 @@ class PYGA_Individual(object):
 
     @classmethod
     def computeMultiObjFitness(cls, population):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.computeMultiObjFitness) must be defined in derivated class.'  
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.computeMultiObjFitness) must be defined in derivated class.')  
 
     # TODO: Remove?
     # def setFitness(self, fitness):
@@ -118,7 +122,7 @@ class PYGA_Individual(object):
         self.__optimised_fitness = newFit
 
     def isBetter(self, otherIndividual, population):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.isBetter) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.isBetter) must be defined in derivated class.')
 
     def isDuplication(self, otherIndiv):
         return (self == otherIndiv)
@@ -140,9 +144,9 @@ class PYGA_Individual(object):
 
     @classmethod
     def crossover(cls, parent1, parent2):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.crossover) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.crossover) must be defined in derivated class.')
 
     @classmethod
     def mutation(cls, individual):
-        raise PYGA_MethodMustBeOverloaded, 'ERROR: This function (Individual.mutation) must be defined in derivated class.'
+        raise PYGA_MethodMustBeOverloaded('ERROR: This function (Individual.mutation) must be defined in derivated class.')
 

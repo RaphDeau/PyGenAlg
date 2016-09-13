@@ -9,6 +9,10 @@
 #
 #######################################################################
 
+from sys import version_info
+if version_info[0] >= 3:
+    xrange = range
+
 # - build-in imports -
 import random
 from math import sqrt
@@ -72,7 +76,7 @@ class PositionningIndiv(PYGA_Individual):
             for ip2 in xrange(len(self.__positions)):
                 if ip2 > ip1:
                     nbConflict = self.__conflict(ip1, ip2)
-                    print "Colision:", ip1, "-", ip2, "-->", nbConflict
+                    print("Colision:", ip1, "-", ip2, "-->", nbConflict)
     
     def __isOutOfSpace(self, index, anchor=None):
         if anchor is None:
@@ -227,6 +231,6 @@ class PositionningIndiv(PYGA_Individual):
                       random.randint(1, self.__SPACE_MATRIX[1]))
             i += 1
         if i == 100:
-            print "Could not find free anchor."
+            print("Could not find free anchor.")
         return anchor
         

@@ -8,7 +8,7 @@
     if selectionName not in self.POSSIBLE_SELECTION_METHODS:
         error = 'ERROR: Unkown given selection method (' + selectionName + ').\n'
         error += 'Possible selections: ' + str(self.POSSIBLE_SELECTION_METHODS)
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SELECTION', 'SELECT', 'SELECTION_METHOD', 'SELECTIONMETHOD', 'SELECT_METHOD', 'SELECTMETHOD']</Keywords>
         <NeededAttributes>
             <Attribute name="POSSIBLE_SELECTION_METHODS">['BEST', 'ROULETTE_WHEEL', 'RANKING']</Attribute>
@@ -25,7 +25,7 @@
         <Check_Method>def checkCrossoverRate(self, crossRate):
     if type(crossRate) != type(0) or crossRate &lt; -1 or crossRate &gt; 100:
         error = 'ERROR: Crossover rate must be an integer between 0 and 100.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['CROSS_RATE', 'CROSSRATE', 'CROSSOVER_RATE', 'CROSSOVERRATE', 'CROSSOVER', 'CROSS']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -36,7 +36,7 @@
         <Check_Method>def checkCrossOnce(self, crossOnce):
     if type(crossOnce) != type(True):
         error = 'ERROR: "Crossover once" must be a boolean.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['CROSS_ONCE', 'CROSSONCE', 'CROSSOVER_ONCE', 'CROSSOVERONCE']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -50,7 +50,7 @@
         <Check_Method>def checkMutationRate(self, mutateRate):
     if type(mutateRate) != type(0) or mutateRate &lt; -1 or mutateRate &gt; 100:
         error = 'ERROR: Mutation rate must be an integer between 0 and 100.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['MUTATE_RATE', 'MUTATERATE', 'MUTATION_RATE', 'MUTATIONRATE', 'MUTATION', 'MUTATE']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -61,7 +61,7 @@
         <Check_Method>def checkReproduceSelectedOnly(self, b):
     if type(b) != type(True):
         error = 'ERROR: reproduceSelectedOnly must be a boolean\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['REPRODUCE_SELECTED_ONLY', 'REPRODUCESELECTED_ONLY', 'REPRODUCE_SELECTEDONLY', 'REPRODUCESELECTEDONLY', 'REPRO_SELECTED_ONLY', 'REPROSELECTED_ONLY', 'REPRO_SELECTEDONLY', 'REPROSELECTEDONLY', 'REPRODUCE_SELECT_ONLY', 'REPRODUCE_SELECTONLY', 'REPRODUCESELECT_ONLY', 'REPRODUCESELECTONLY', 'REPRO_SELECT_ONLY', 'REPRO_SELECTONLY', 'REPROSELECT_ONLY', 'REPROSELECTONLY']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -74,7 +74,7 @@
     if scalingName not in self.POSSIBLE_SCALING_METHODS:
         error = 'ERROR: Unkown given scaling method (' + scalingName + ').\n'
         error += 'Possible scaling: ' + str(self.POSSIBLE_SCALING_METHODS)
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SCALING', 'SCALE', 'SCALING_METHOD', 'SCALINGMETHOD', 'SCALE_METHOD', 'SCALEMETHOD']</Keywords>
         <NeededAttributes>
             <Attribute name="POSSIBLE_SCALING_METHODS">['LINEAR', 'EXPONENTIAL']</Attribute>
@@ -92,7 +92,7 @@
         scaleRate = float(scaleRate)
     except:
         error = 'ERROR: scaling rate must be a reel number.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SCALING_RATE', 'SCALE_RATE', 'SCALINGRATE', 'SCALERATE']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -105,7 +105,7 @@
     if sharingName not in self.POSSIBLE_SHARING_METHODS:
         error = 'ERROR: Unkown given sharing method (' + sharingName + ').\n'
         error += 'Possible sharing: ' + str(self.POSSIBLE_SHARING_METHODS)
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SHARING', 'SHARE', 'SHARING_METHOD', 'SHARINGMETHOD', 'SHARE_METHOD', 'SHAREMETHOD']</Keywords>
         <NeededAttributes>
             <Attribute name="POSSIBLE_SHARING_METHODS">['BASIC', 'CLUSTERING']</Attribute>
@@ -123,7 +123,7 @@
         shareRate = float(shareRate)
     except:
         error = 'ERROR: sharing rate must be a reel number.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SHARING_RATE', 'SHARE_RATE', 'SHARINGRATE', 'SHARERATE']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -139,7 +139,7 @@
         dist = float(dist)
     except:
         error = 'ERROR: distance of influence between two individuals must be a reel number.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['INFLUENCE_DISTANCE', 'INFLUENCEDISTANCE', 'INFLUENCE_DIST', 'INFLUENCEDIST', 'INF_DISTANCE', 'INFDISTANCE', 'INF_DIST', 'INFDIST', 'DISTANCE_INFLUENCE', 'DISTANCEINFLUENCE', 'DISTANCE_INF', 'DISTANCEINF', 'DIST_INFLUENCE', 'DISTINFLUENCE', 'DIST_INF', 'DISTINF', "INFL_DIST", "INFLDIST", "DIST_INFL", "DISTINFL"]</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -152,10 +152,10 @@
         endTime = float(endTime)
     except:
         error = 'ERROR: maximum execution time must be a reel number.\n'
-        raise PYGA_ParametersError, error
+        raise PYGA_ParametersError(error)
     if endTime &lt; 0.0:
         error = 'ERROR: maximum execution time must be a positive reel number.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['END_TIME', 'ENDTIME', 'EXEC_TIME', 'EXECTIME', 'MAX_TIME', 'MAXTIME', 'MAX_EXEC_TIME', 'MAXEXECTIME']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -168,7 +168,7 @@
         <Check_Method>def checkInitPop(self, initPop):
     if type(initPop) != type([]):
         error = 'ERROR: initial population must be a list of individuals\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['INIT_POP', 'INITPOP', 'INIT_POPULATION', 'INITPOPULATION', 'INITIAL_POP', 'INITIALPOP', 'INITIAL_POPULATION', 'INITIALPOPULATION']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -181,10 +181,10 @@
         <Check_Method>def checkPopFile(self, popFile):
     if type(popFile) != type(''):
         error = 'ERROR: Population file must be a string.\n'
-        raise PYGA_ParametersError, error
+        raise PYGA_ParametersError(error)
     if popFile != self.POP_FILE_NONE_VALUE and not os.path.isfile(popFile):
         error = 'ERROR: Population file '+popFile+' is not an existing file.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['POP_FILE', 'POPFILE', 'POPULATION_FILE', 'POPULATIONFILE', 'INIT_POP_FILE', 'INIT_POPFILE', 'INITPOP_FILE', 'INITPOPFILE', 'INIT_POPULATION_FILE', 'INIT_POPULATIONFILE', 'INITPOPULATION_FILE', 'INITPOPULATIONFILE', 'INITIAL_POP_FILE', 'INITIAL_POPFILE', 'INITIALPOP_FILE', 'INITIALPOPFILE', 'INITIAL_POPULATION_FILE', 'INITIAL_POPULATIONFILE', 'INITIALPOPULATION_FILE', 'INITIALPOPULATIONFILE']</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -197,14 +197,14 @@
         <Check_Method>def checkSelfOptimize(self, paramList):
     if type(paramList) != type([]):
         error = 'ERROR: selfOptimize must be a list\n'
-        raise PYGA_ParametersError, error
+        raise PYGA_ParametersError(error)
     unknownParams = []
     for param in paramList:
         if self.getParamFromKeyword(param) is None:
             unknownParams.append(param)
     if len(unknownParams) > 0:
         error = "ERROR: parameters given for selfOptimize "+unicode(unknownParams) + " are unknown."
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['SELF_OPTIMIZED_PARAMETERS', 'SELFOPTIMIZED_PARAMETERS', "SELF_OPTIMIZEDPARAMETERS", "SELFOPTIMIZEDPARAMETERS", 'SELF_OPTIM_PARAMETERS', 'SELFOPTIM_PARAMETERS', "SELF_OPTIMPARAMETERS", "SELFOPTIMPARAMETERS", "SELF_OPTIMIZED_PARAM", "SELF_OPTIMIZEDPARAM", "SELFOPTIMIZED_PARAM", "SELFOPTIMIZEDPARAM", "SELF_OPTIM_PARAM", "SELF_OPTIMPARAM", "SELFOPTIM_PARAM", "SELFOPTIMPARAM"]</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -215,7 +215,7 @@
         <Check_Method>def checkMaxRepro(self, mr):
     if type(mr) != type(0) or mr &lt; 0 or mr &gt; 100:
         error = 'ERROR: Maximum reproduction rate must be in [0, 100].\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>["MAX_RERPODUCTION", "MAXREPRODUCTION", "MAX_REPRO", "MAXREPRO", "MAX_REPRO_RATE", "MAXREPRORATE"]</Keywords>
         <NeededAttributes/>
     </Parameter>
@@ -226,7 +226,7 @@
         <Check_Method>def checkNbClustInf(self, nbClust):
     if type(nbClust) != type([]) or nbClust[0] &lt; 0 or nbClust[1] &lt; nbClust[0]:
         error = 'ERROR: Number of influence cluster must be a positive range.\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['NB_CLUSTER_INFLUENCE', 'NB_CLUSTERINFLUENCE', 'NBCLUSTER_INFLUENCE', 'NBCLUSTERINFLUENCE', 'NB_CLUST_INF', 'NB_CLUSTINF', 'NBCLUST_INF', 'NBCLUSTINF']</Keywords>
         <NeededAttributes/>
     </Parameter>

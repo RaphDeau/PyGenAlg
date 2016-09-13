@@ -6,9 +6,9 @@
         <Check_Method>def checkPopSize(self, popSize):
     # Check if the given population size is a positive integer
     if type(popSize) != type(0):
-        raise PYGA_ParametersError, 'ERROR: Population size must be an integer.'
+        raise PYGA_ParametersError('ERROR: Population size must be an integer.')
     if popSize &lt; 0:
-        raise PYGA_ParametersError, 'ERROR: Population size must be positive.'</Check_Method>
+        raise PYGA_ParametersError('ERROR: Population size must be positive.')</Check_Method>
         <Keywords>['POPSIZE', 'POPULATIONSIZE', 'POP_SIZE', 'POPULATION_SIZE']</Keywords>
     </Parameter>
     <Parameter name="nb_generations">
@@ -18,9 +18,9 @@
         <Check_Method>def checkNbGen(self, nbGen):
     # Check if the given number of generation is positive integer
     if type(nbGen) != type(0):
-        raise PYGA_ParametersError, 'ERROR: Number of maximum generation must be an integer.'
+        raise PYGA_ParametersError('ERROR: Number of maximum generation must be an integer.')
     if nbGen &lt; 0:
-        raise PYGA_ParametersError, 'ERROR: Number of maximum generation must be positive (0 for endless loop).'</Check_Method>
+        raise PYGA_ParametersError('ERROR: Number of maximum generation must be positive (0 for endless loop).')</Check_Method>
         <Keywords>['NBGEN', 'NBGENERATION', 'NBGENS', 'NBGENERATIONS', 'NB_GEN', 'NB_GENERATION', 'NB_GENS', 'NB_GENERATIONS']</Keywords>
     </Parameter>
     <Parameter name="del_duplicated_indiv">
@@ -30,7 +30,7 @@
         <Check_Method>def checkDelDuplicatedIndiv(self, b):
     if type(b) != type(True):
         error = 'ERROR: delDuplicatedIndiv must be a boolean\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['DEL_DUPLICATED_INDIVIDUALS', 'DELDUPLICATED_INDIVIDUALS', 'DEL_DUPLICATEDINDIVIDUALS', 'DELDUPLICATEDINDIVIDUALS', 'DEL_DUPLICATED_INDIV', 'DELDUPLICATED_INDIV', 'DEL_DUPLICATEDINDIV', 'DELDUPLICATEDINDIV']</Keywords>
     </Parameter>
     <Parameter name="del_dupl_nb_try">
@@ -40,7 +40,7 @@
         <Check_Method>def checkDelDuplicatedNbTryIndiv(self, b):
     if type(b) != type(0) or b &lt;= 0:
         error = 'ERROR: delDuplNbTry must be a positive integer\n'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['DEL_DUPL_NB_TRY',"DEL_DUPL_NBTY", "DEL_DUPLNBTRY", "DELDUPLNBTRY", "DELDUPLNB_TRY","DELDUPL_NB_TRY","DEL_DUPLNB_TRY","DELDUPL_NBTRY"]</Keywords>
     </Parameter>
     <Parameter name="max_process">
@@ -54,10 +54,10 @@
         nbProc = int(nbProc)
     except:
         error = 'ERROR: Maximum parallel fitness must be an integer.'
-        raise PYGA_ParametersError, error
+        raise PYGA_ParametersError(error)
     if nbProc &lt; 0:
         error = 'ERROR: Maximum parallel fitness must be a positive integer (0 for maximum, 1 for no parallelisation).'
-        raise PYGA_ParametersError, error</Check_Method>
+        raise PYGA_ParametersError(error)</Check_Method>
         <Keywords>['MAX_PROCESS', 'MAXPROCESS', 'MAX_PARALLEL_FITNESS', 'MAXPARALLELFITNESS']</Keywords>
     </Parameter>
 </PYGA_BaseParameters>
