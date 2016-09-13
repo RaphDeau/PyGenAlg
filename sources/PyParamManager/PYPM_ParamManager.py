@@ -66,7 +66,7 @@ class PYPM_ParamManager:
     def getParam(self, paramLabel):
         # 1- Check if the parameter is known
         if paramLabel not in self.__allParamsID:
-            raise Exception, 'ERROR: Unknown parameter ' + paramLabel + '.'
+            raise Exception('ERROR: Unknown parameter ' + paramLabel + '.')
         # 2- Return the dictionnary of this parameter containing:
         #      - its description (text to display)
         #      - its value
@@ -78,7 +78,7 @@ class PYPM_ParamManager:
     def __getParamDict(self, paramLabel):
         # 1- Check if the parameter is known
         if paramLabel not in self.__allParamsID:
-            raise Exception, 'ERROR: Unknown parameter ' + paramLabel + '.'
+            raise Exception('ERROR: Unknown parameter ' + paramLabel + '.')
         # 2- Return the dictionnary of this parameter containing:
         #      - its description (text to display)
         #      - its value
@@ -95,7 +95,7 @@ class PYPM_ParamManager:
             if upKey not in self.__allParamsKeywords.keys():
                 error = 'Unkown parameter ' + key + '.\n'
                 error += 'Availables parameters are: ' + str(self.__allParamsID)
-                raise Exception, error
+                raise Exception(error)
             else:
                 # 1.2.1- Store the new value and a string to get this value
                 strKwarg = 'kwargs[key]'

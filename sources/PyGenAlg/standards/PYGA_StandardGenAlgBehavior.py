@@ -480,9 +480,9 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         
         for key in kwargs.keys():
             if key not in paramWithMethods:
-                raise PYGA_BehaviorAddMethodError, 'ERROR: add_method arguments must be in ' + str(paramWithMethods) + '.'
+                raise PYGA_BehaviorAddMethodError('ERROR: add_method arguments must be in ' + str(paramWithMethods) + '.')
             if type(kwargs[key]) != type([]) or len(kwargs[key]) != 2:
-                raise PYGA_BehaviorAddMethodError, 'ERROR: add_method arguments must be a list of [methodID, methodName].'
+                raise PYGA_BehaviorAddMethodError('ERROR: add_method arguments must be a list of [methodID, methodName].')
 
             methodID = kwargs[key][0].upper()
             methodName = kwargs[key][1]
@@ -682,7 +682,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
     # Private - Get average fitness of the population
     def __getAverageFitness(self, population):
         if self.isMultiObj():
-            raise PYGA_FitnessComputation, 'ERROR: Average fitness cannot be computed for multi-objectives individuals...'
+            raise PYGA_FitnessComputation('ERROR: Average fitness cannot be computed for multi-objectives individuals...')
         fitSum = 0.0
         for indiv in population:
             fitSum += indiv.getFitness()

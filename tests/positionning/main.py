@@ -9,6 +9,10 @@
 #
 #######################################################################
 
+from sys import version_info
+if version_info[0] >= 3:
+    xrange = range
+
 from PyGenAlg.core.PYGA_GenAlg import PYGA_GenAlg
 
 from positionning_Behav import PositionningBehavior
@@ -21,9 +25,32 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 from numpy import arange
 
+from random import randint, random
+
+# Nice one !
+# SPACE_MATRIX = [8, 8]
+# NB_OBJECT = 9
+# MAX_SIZE = [6, 4]
+# MAX_AREA = 12
+
 SPACE_MATRIX = [8, 8]
-OBJECT_TO_PLACE = [[1, 4], [3, 2], [5, 1], [2, 2], [6, 3], [3, 1], [2, 3], [1, 5]]
-OBJECT_TO_PLACE_COL = ["red", "green", "yellow", "orange", "lightgreen", "blue", [0.5, 0.5, 0.5], "black"]
+NB_OBJECT = 9
+MAX_SIZE = [6, 4]
+MAX_AREA = 12
+
+OBJECT_TO_PLACE = []
+OBJECT_TO_PLACE_COL = []
+for i in xrange(NB_OBJECT):
+    width = randint(1, MAX_SIZE[0])
+    heigh = randint(1, MAX_SIZE[1])
+    while heigh * width > MAX_AREA:
+        width = randint(1, MAX_SIZE[0])
+        heigh = randint(1, MAX_SIZE[1])
+    OBJECT_TO_PLACE.append([width, heigh])
+    OBJECT_TO_PLACE_COL.append([random(), random(), random()])
+
+#OBJECT_TO_PLACE = [[1, 4], [3, 2], [5, 1], [2, 2], [6, 3], [3, 1], [2, 3], [1, 5]]
+#OBJECT_TO_PLACE_COL = ["red", "green", "yellow", "orange", "lightgreen", "blue", [0.5, 0.5, 0.5], "black"]
 
 fig = plt.figure()
 ax1 = fig.add_subplot(221)
@@ -71,7 +98,7 @@ if __name__ == "__main__":
                          selection='best',
                          sharing_rate=0.0,
                          influence_dist=23,
-                         scaleRate=1.0
+                         scaleRate = 1.0
                          )
     genAlg.run()
     endPop = genAlg.getPopulation()

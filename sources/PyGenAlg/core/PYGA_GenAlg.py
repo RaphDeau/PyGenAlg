@@ -76,10 +76,6 @@ class PYGA_GenAlg:
     # ------------------
     # Public - Main loop
     def run(self):
-        """
-        TODO:
-        :return:
-        """
         self.__outputPrint.write('***********************************************************************\n')
         self.__outputPrint.write('PPPPPP   Y     Y   GGGGG     EEEEEE  N     N     A     L         GGGGG \n')
         self.__outputPrint.write('P     P   Y   Y   G     G   E        NN    N    A A    L        G     G\n')
