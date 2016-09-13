@@ -15,10 +15,6 @@
 #
 #-----------------------
 
-from sys import version_info
-if version_info[0] >= 3:
-    unicode = str
-
 from PyParamManager.PYPM_ParamManager import PYPM_ParamManager
 
 from lxml import etree
