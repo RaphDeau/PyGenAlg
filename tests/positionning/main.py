@@ -76,10 +76,10 @@ if __name__ == "__main__":
     genAlg.run()
     endPop = genAlg.getPopulation()
     bestInd = endPop.getBestIndividual()
-    print endPop
-    print '----'
-    print bestInd
-    print "Generation: ", endPop[0].getBirthGeneration()
+    print(endPop)
+    print('----')
+    print(bestInd)
+    print("Generation: ", endPop[0].getBirthGeneration())
     sortedPop = endPop.getBestIndividual(4)
             
     plotIndiv(sortedPop[0], 1)
@@ -88,4 +88,3 @@ if __name__ == "__main__":
     plotIndiv(sortedPop[3], 4)
     plt.show()
     logFid.close()
-    

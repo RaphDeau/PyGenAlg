@@ -28,6 +28,9 @@ from PyGenAlg.standards.PYGA_StandardGenAlgBehavior import PYGA_StandardGenAlgBe
 
 
 class PYGA_GenAlg:
+    """
+    TODO:
+    """
 
     DEBUG_MODE = False
     # ==================
@@ -38,10 +41,10 @@ class PYGA_GenAlg:
     # Public - Constructor
     def __init__(self, 
                  individualClass, 
-                 genAlgBehaviorClass = PYGA_StandardGenAlgBehavior,
-                 populationClass = PYGA_Population,
-                 debugMode = False,
-                 outputPrint = None):
+                 genAlgBehaviorClass=PYGA_StandardGenAlgBehavior,
+                 populationClass=PYGA_Population,
+                 debugMode=False,
+                 outputPrint=None):
         
         self.DEBUG_MODE = debugMode
         if outputPrint is None:
@@ -50,12 +53,12 @@ class PYGA_GenAlg:
         
         # 1- Check given classes
         if not issubclass(individualClass, PYGA_Individual):
-            raise PYGA_CreationError, 'ERROR: individual class must inherit from PYGA_Individual'
+            raise PYGA_CreationError('ERROR: individual class must inherit from PYGA_Individual')
         if not issubclass(genAlgBehaviorClass, PYGA_GenAlgBehavior):
-            raise PYGA_CreationError, 'ERROR: behavior class must inherit from PYGA_GenAlgBehavior'
+            raise PYGA_CreationError('ERROR: behavior class must inherit from PYGA_GenAlgBehavior')
         if not issubclass(populationClass, PYGA_Population):
-            raise PYGA_CreationError, 'ERROR: population class must inherit from PYGA_Population'
-        
+            raise PYGA_CreationError('ERROR: population class must inherit from PYGA_Population')
+
         # 2- Store class information
         self.__genAlgBehavior = genAlgBehaviorClass(individualClass, populationClass, debugMode, outputPrint)
         self.__individualClass = individualClass
@@ -64,13 +67,19 @@ class PYGA_GenAlg:
         
         # 3- Create the population
         self.__population = populationClass(individualClass, self.__genAlgBehavior, debugMode, outputPrint)
+
+        self.__evolvStartTime = None
     # Public - End of Constructor
     # ---------------------------
 
-        
+
     # ------------------
     # Public - Main loop
     def run(self):
+        """
+        TODO:
+        :return:
+        """
         self.__outputPrint.write('***********************************************************************\n')
         self.__outputPrint.write('PPPPPP   Y     Y   GGGGG     EEEEEE  N     N     A     L         GGGGG \n')
         self.__outputPrint.write('P     P   Y   Y   G     G   E        NN    N    A A    L        G     G\n')
@@ -90,7 +99,7 @@ class PYGA_GenAlg:
         self.__outputPrint.flush()
         # Get the start time
         self.__evolvStartTime = time.time()
-        iGen = 0 # Current generation number
+        iGen = 0  # Current generation number
         # 1- Generate the initial population
         self.__initPopulation(infoStr)
         # 2- Try an evaluation: maybe inital population already have best solution...
@@ -139,7 +148,7 @@ class PYGA_GenAlg:
                 self.__outputPrint.flush()
             percent, continu = self.__evaluation(iGen, infoStr)
             self.__endOfGeneration(iGen, not continu, infoStr)
-        infoStr = '\rEvolving... 100% (Generation #' + str(iGen) + ')                                                                     \n'
+        infoStr = "\rEvolving... 100% (Generation #" + str(iGen) + ")                                                                     \n"
         self.__outputPrint.write(infoStr)
         self.__outputPrint.flush()
         # Compute the time of evolving
@@ -173,12 +182,6 @@ class PYGA_GenAlg:
     def getPopulation(self):
         return self.__population
     # ------------------------------
-
-    def setPopSize(self, popSize):
-        self.__genAlgBehavior.setPopSize(popSize)
-
-    def setNbGen(self, nbGen):
-        self.__genAlgBehavior.setNbGen(nbGen)
 
     def setParameters(self, **kwargs):
         self.__genAlgBehavior.setParameters(**kwargs)
@@ -276,7 +279,7 @@ class PYGA_GenAlg:
     # Private - Reproduction
     def __reproduction(self, population, selectedPopulation, infoStr):
         if self.DEBUG_MODE:
-            self.__outputPrint.write('PYGA_GenAlg / __reproduction - ' + str(self.__genAlgBehavior.__class__) +'\n')
+            self.__outputPrint.write('PYGA_GenAlg / __reproduction - ' + str(self.__genAlgBehavior.__class__) + '\n')
             self.__outputPrint.flush()
         reproductedPopulation = self.__genAlgBehavior.reproduction(population, 
                                                                    selectedPopulation, 
@@ -294,4 +297,3 @@ class PYGA_GenAlg:
     # ===================
     # ^ Private methods ^
     # ===================
-        

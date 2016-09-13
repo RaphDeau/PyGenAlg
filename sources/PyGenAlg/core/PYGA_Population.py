@@ -22,6 +22,10 @@ from multiprocessing import Pipe
 
 from PyGenAlg.core.PYGA_Exceptions import PYGA_PopulationError
 
+from sys import version_info
+if version_info[0] >= 3:
+    xrange = range
+
 class PYGA_Population:
    
     # ==================
@@ -93,7 +97,7 @@ class PYGA_Population:
             if indiv is individual:
                 iInd = i
         if iInd == -1:
-            raise PYGA_PopulationError, 'ERROR: cannot remove individual from the population (individual not found).'
+            raise PYGA_PopulationError('ERROR: cannot remove individual from the population (individual not found).')
         self.__individuals.pop(iInd)
         try:
             iInd = self.__uncatchedIndividuals.index(individual)
@@ -115,7 +119,7 @@ class PYGA_Population:
         # 1- Check fileName
         if type(fileName) != type(''):
             error = 'ERROR: population save file must be a string.\n'
-            raise PYGA_PopulationError, error
+            raise PYGA_PopulationError(error)
         # 2- Write number of individuals
         fid = open(fileName, 'w')
         fid.write(str(len(self.__individuals)) + '\n')
@@ -131,10 +135,10 @@ class PYGA_Population:
         # 1- Check fileName
         if fileName is None or not os.path.isfile(fileName):
             error = 'ERROR: population file '+str(fileName)+' is not an existing file.\n'
-            raise PYGA_PopulationError, error
+            raise PYGA_PopulationError(error)
         # 2- Empty current population
         while len(self.__individuals) > 0:
-            self.remove(self.__individuals[0])
+            self.removeIndividual(self.__individuals[0])
         # 3- Read number of individuals
         fid = open(fileName, 'r')
         nbInd = eval(fid.readline())
@@ -227,7 +231,7 @@ class PYGA_Population:
         if len(self.__individuals) < 2:
             error = 'At least TWO parents are needed to proceed to crossover.\n'
             error += 'Please change crossover/mutation rates or population size.'
-            raise PYGA_PopulationError, 'ERROR: ' + error
+            raise PYGA_PopulationError('ERROR: ' + error)
 
         # 2- Get the right list to find parents
         indList = self.__individuals
@@ -242,7 +246,7 @@ class PYGA_Population:
         
         # 3- Get random parents
         if parent1 is None:
-            [parent1, parent2] = biasSelectionMethod(indList,2)            
+            [parent1, parent2] = biasSelectionMethod(indList, 2)
         else:
             # Pick second parent randomly
             parent2 = parent1
@@ -265,7 +269,7 @@ class PYGA_Population:
         if len(self.__uncatchedIndividuals) == 0:
             self.__uncatchedIndividuals = list(self.__individuals)
 
-        return (parent1, parent2)
+        return parent1, parent2
     # Public - End of Get random parents
     # ----------------------
 
@@ -373,7 +377,7 @@ class PYGA_Population:
                     self._outputPrint.write(infoStr3)
                     self._outputPrint.flush()
                 if i != 0:
-                    i = i%(len(processList))
+                    i %= len(processList)
 
         # 3- For multi obj, call fitness function (obj have been computed)
         if self.__individualClass.MULTI_OBJ:
@@ -411,7 +415,6 @@ class PYGA_Population:
     # =====================
     # ^ Specifics methods ^
     # =====================
-
 
     # =========================
     # v Operators overloading v
@@ -452,7 +455,6 @@ class PYGA_Population:
         return self.__individuals[i]
     # ----------------------
     
-
     # ----------------------
     # Operator "str"
     def __str__(self):
