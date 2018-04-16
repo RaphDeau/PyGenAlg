@@ -22,6 +22,10 @@ import os
 import random
 import time
 
+from sys import version_info
+if version_info[0] >= 3:
+    xrange = range
+
 # - local imports -
 
 class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
@@ -58,33 +62,30 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         if popFile != self.POP_FILE_NONE_VALUE:
             population.loadPopulation(popFile)
             infoStr2 = infoStr + ' Population loaded: ' + str(population.size()) + ' individuals.\n'
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         elif popArg != self.INIT_POP_NONE_VALUE:
             population.parsePopulation(popArg)
             infoStr2 = infoStr + ' Population set: ' + str(population.size()) + ' individuals.\n'
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         else:
-            population.generateInitPop(self.getPopSize(), 
+            population.generateInitPop(self.getParam(self.POPULATION_SIZE_LABEL),
                                        self.getParam(self.DEL_DUPLICATED_INDIV_LABEL),
                                        self.getParam(self.MAX_PROCESS_LABEL), 
                                        infoStr)
             infoStr2 = infoStr + ' Population generated: ' + str(population.size()) + ' individuals.\n'
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
-        if population.size() < self.getPopSize():
+            self.printLog(infoStr2)
+        if population.size() < self.getParam(self.POPULATION_SIZE_LABEL):
             infoStr2 = infoStr + ' Population loaded too small. Generating ' + str(self.getPopSize() - population.size()) + ' individuals.\n'
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
-        while population.size() < self.getPopSize():
-            population.addIndividual(self.generateIndiv())
+            self.printLog(infoStr2)
+        while population.size() < self.getParam(self.POPULATION_SIZE_LABEL):
+            population.addIndividual(self.getIndividualClass().generate())
         
     # ------------------------
 
-    # ------------------------
-    # Public - generation stop
-    def generationStop(self, iGeneration, population, startTime, infoStr):
+    # ----------------------
+    # Public - stop criteria
+    def stopCriteria(self, population, iGeneration, startTime, infoStr):
+        # May be changed in derived class
         # 1- Store the output
         stop = False
         percent = 0
@@ -94,7 +95,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         if endTime != 0:
             timeDiff = time.time() - startTime
             percent = int(100 * timeDiff / endTime)
-            if  timeDiff >= endTime:
+            if timeDiff >= endTime:
                 stop = True
 
         # 3- Check number of generation
@@ -105,15 +106,8 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                 percent = genPercent
             if iGeneration == nbGen:
                 stop = True
-        
-        return percent, stop
-    # Public - End of generation stop
-    # -------------------------------
 
-    # ----------------------
-    # Public - stop criteria
-    def stopCriteria(self, population, iGeneration, infoStr):
-        return False # Do nothing, may be changed in derived class
+        return percent, stop
     # ----------------------
 
     # ----------------------------
@@ -152,18 +146,14 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
     # ----------------------
     # Public - Reproduction
     def reproduction(self, population, selectedPopulation, infoStr):
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / reproduction - input\n')
-            self._outputPrint.flush()
+        self.printLog('PYGA_StandaradGenAlgBehavior / reproduction - input\n', debug=True)
         ps = population.size()
         # 1- Get the population to consider (whole or selected only)
         if self.getParam(self.REPRODUCE_SELECTED_ONLY_LABEL):
             currentPop = selectedPopulation
         else:
             currentPop = population
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / reproduction - Population chosen\n')
-            self._outputPrint.flush()
+        self.printLog('PYGA_StandaradGenAlgBehavior / reproduction - Population chosen\n', debug=True)
         # 2- Get the number of crossed/mutated individual in the end population
         crossRate = self.getParam(self.CROSSOVER_LABEL)
         nbCrossedInd = int(round(ps * crossRate / 100.))
@@ -172,19 +162,13 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         # 3- Reproduction process...
         # Keep the entire population to check duplication
         newPop = selectedPopulation
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / reproduction - Crossing\n')
-            self._outputPrint.flush() 
+        self.printLog('PYGA_StandaradGenAlgBehavior / reproduction - Crossing\n', debug=True)
         crossedPopulation = self.crossover(currentPop, nbCrossedInd, newPop, infoStr)
         newPop += crossedPopulation
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / reproduction - Muting\n')
-            self._outputPrint.flush()
+        self.printLog('PYGA_StandaradGenAlgBehavior / reproduction - Muting\n', debug=True)
         mutatedPopulation = self.mutation(currentPop, nbMutatedInd, newPop, infoStr)
         reproducedPopulation = mutatedPopulation + crossedPopulation
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / reproduction - Reproduction done\n')   
-            self._outputPrint.flush()
+        self.printLog('PYGA_StandaradGenAlgBehavior / reproduction - Reproduction done\n', debug=True)
         return reproducedPopulation
     # Public - End of Reproduction
     # ----------------------
@@ -215,11 +199,11 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                 # 2.1- Get the parents to cross
                 parents = population.getRandomParents(self.biasCrossoverSelection,
                                                       useTwice=(not crossOnce))
-                while not self.individualCanBeCrossed(parents):
+                while not self.getIndividualClass().canBeCrossed(parents[0], parents[1]):
                     parents = population.getRandomParents(self.biasCrossoverSelection,
                                                           useTwice=(not crossOnce))
                 # 2.2- Call cross method from individual class
-                crossResult = self.individualCrossover(parents[0], parents[1])
+                crossResult = self.getIndividualClass().crossover(parents[0], parents[1])
                 if type(crossResult) != type([]):
                     newIndivs = [crossResult]
                 else:
@@ -250,11 +234,11 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                 # Get the parents to cross
                 parents = population.getRandomParents(self.biasCrossoverSelection,
                                                       useTwice=(not crossOnce))
-                while not self.individualCanBeCrossed(parents):
+                while not self.getIndividualClass().canBeCrossed(parents[0], parents[1]):
                     parents = population.getRandomParents(self.biasCrossoverSelection,
                                                           useTwice=(not crossOnce))
                 # Call cross method from individual class
-                crossResult = self.individualCrossover(parents[0], parents[1])
+                crossResult = self.getIndividualClass().crossover(parents[0], parents[1])
                 # Store the new individuals
                 if type(crossResult) != type([]):
                     newIndivs = [crossResult]
@@ -263,10 +247,8 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                 for newIndiv in newIndivs:
                     crossedPopulation.addIndividual(newIndiv)
                 infoStr2 = infoStr + " Crossover - Could not avoid duplication."
-                self._outputPrint.write(infoStr2)
-                self._outputPrint.flush()
-            if self.DEBUG_MODE:
-                self._outputPrint.write('PYGA_StandaradGenAlgBehavior / crossover - crossedPopulation.size() / nbCrossInd = ' + str(crossedPopulation.size()) + ' / ' + str(nbCrossInd) + '\n')
+                self.printLog(infoStr2)
+            self.printLog('PYGA_StandaradGenAlgBehavior / crossover - crossedPopulation.size() / nbCrossInd = ' + str(crossedPopulation.size()) + ' / ' + str(nbCrossInd) + '\n', debug=True)
         # Update crossed individual number if needed
         nbIndivMore = crossedPopulation.size() - nbCrossInd 
         if nbIndivMore > 0:
@@ -281,20 +263,14 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         # 1- Create the new population
         # -- It will contain only all individuals generated by mutation
         mutatedPopulation = self.createPopulation()
-        if self.DEBUG_MODE:
-            self._outputPrint.write('PYGA_StandaradGenAlgBehavior / mutation - Muted population created\n')
-            self._outputPrint.flush()
+        self.printLog('PYGA_StandaradGenAlgBehavior / mutation - Muted population created\n', debug=True)
         # 2- Generate enought individuals
         while mutatedPopulation.size() < nbMutInd:
-            if self.DEBUG_MODE:
-                self._outputPrint.write('PYGA_StandaradGenAlgBehavior / mutation - Creating new individual\n')
-                self._outputPrint.flush()
+            self.printLog('PYGA_StandaradGenAlgBehavior / mutation - Creating new individual\n', debug=True)
             # 2.1- Get the individual to mutate
             individual = population.getRandomIndividual(self.biasMutationSelection)
-            while not self.individualCanBeMuted(individual):
-                if self.DEBUG_MODE:
-                    self._outputPrint.write('PYGA_StandaradGenAlgBehavior / mutation - Indiv cannot be muted, choose another\n')
-                    self._outputPrint.flush()
+            while not self.getIndividualClass().canBeMuted(individual):
+                self.printLog('PYGA_StandaradGenAlgBehavior / mutation - Indiv cannot be muted, choose another\n', debug=True)
                 individual = population.getRandomIndividual(self.biasMutationSelection)
             # 2.2- Call mutation method from individual class
             duplicated = True
@@ -302,10 +278,8 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
             nbTry = 0
             while duplicated and nbTry < nbTryMax:
                 nbTry += 1
-                newIndiv = self.individualMutation(individual)
-                if self.DEBUG_MODE:
-                    self._outputPrint.write('PYGA_StandaradGenAlgBehavior / mutation - Checking duplication\n')
-                    self._outputPrint.flush()
+                newIndiv = self.getIndividualClass().mutation(individual)
+                self.printLog('PYGA_StandaradGenAlgBehavior / mutation - Checking duplication\n', debug=True)
                 duplicated = False
                 if self.getParam(self.DEL_DUPLICATED_INDIV_LABEL):
                     for indiv in newPop:
@@ -320,11 +294,8 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
             if duplicated and nbTry == nbTryMax:
                 # Duplication cannot be avoided
                 infoStr2 = infoStr + " Mutation - Could not avoid duplication."
-                self._outputPrint.write(infoStr2)
-                self._outputPrint.flush()
-            if self.DEBUG_MODE:
-                self._outputPrint.write('PYGA_StandaradGenAlgBehavior / mutation - Individual valid, add it to population\n')
-                self._outputPrint.flush()
+                self.printLog(infoStr2)
+            self.printLog('PYGA_StandaradGenAlgBehavior / mutation - Individual valid, add it to population\n', debug=True)
             mutatedPopulation.addIndividual(newIndiv)
         nbIndivMore = mutatedPopulation.size() - nbMutInd
         if nbIndivMore > 0:
@@ -342,7 +313,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         newInflDist = self.getParam(self.DIST_INFLUENCE_LABEL)
         if iGen == 0:
             # Try to have maximum diversity:
-            searchSpaceSize, dim = self.individualSearchSpaceInfo()
+            searchSpaceSize, dim = self.getIndividualClass()().individualSearchSpaceInfo()
             maxClusterSize = searchSpaceSize / population.size()
             # This distance will cover maximum space search
             newInflDist = pow(maxClusterSize, 1.0/dim)
@@ -368,8 +339,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                     newInflDist = minDist + (newInflDist - minDist)/2.0
         # TODO: Distance according to convergence
         infoStr2 = infoStr + ' Optimizing influence distance: ' + unicode(newInflDist) + "."
-        self._outputPrint.write(infoStr2)
-        self._outputPrint.flush()
+        self.printLog(infoStr2)
         PYGA_GenAlgBehavior.setParameters(self, **{"infl_dist":newInflDist})
         
     def optimizeCrossover(self, population, iGen, infoStr):
@@ -379,8 +349,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
             # Specific case: lot of duplicated individuals --> crossover = 0
             newCrossValue = 0
             infoStr2 = infoStr + ' Optimizing crossover rate: ' + unicode(newCrossValue) + " (Too many duplication: "+unicode(duplPercent)+"%)."
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         else:
             clusters = population.getClusters(self.getParam(self.DIST_INFLUENCE_LABEL))
             # TODO: Param pour le nombre min de cross/mute ?
@@ -400,8 +369,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
             # Old method with only min and max, no stability point
             #newCrossValue = len(clusters)*90/(population.size()-1) - 90/(population.size()-1)
             infoStr2 = infoStr + ' Optimizing crossover rate: ' + unicode(newCrossValue) + " ("+unicode(len(clusters))+" clusters)."
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         PYGA_GenAlgBehavior.setParameters(self, **{"crossrate":newCrossValue})
         
     def optimizeMutation(self, population, iGen, infoStr):
@@ -410,8 +378,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
         if duplPercent > authorizedDuplPercent:
             newMuteValue = min(90, duplPercent*3)
             infoStr2 = infoStr + ' Optimizing mutation rate: ' + unicode(newMuteValue) + " (Too many duplication: "+unicode(duplPercent)+"%)."
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         else:
             clusters = population.getClusters(self.getParam(self.DIST_INFLUENCE_LABEL))
             # newMuteValue = a*nbClust²+b*nbClust+c
@@ -437,8 +404,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
     #             newMuteValue = 20
             # TODO: Enhance depending on convergence
             infoStr2 = infoStr + ' Optimizing mutation rate: ' + unicode(newMuteValue) + " ("+unicode(len(clusters))+" clusters)."
-            self._outputPrint.write(infoStr2)
-            self._outputPrint.flush()
+            self.printLog(infoStr2)
         PYGA_GenAlgBehavior.setParameters(self, **{"mutaterate":newMuteValue})
         
     # ----------------------
@@ -532,12 +498,14 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
                     worstInd = None
                     for ind in bestPop:
                         if worstInd is None or \
-                                self.isIndividualBetter(worstInd, 
-                                                        ind,
-                                                        population):
+                                self.getIndividualClass().isBetter(worstInd,
+                                                                   ind,
+                                                                   population):
                             worstInd = ind
                     # 1.1.2.2- Replace it if the current individual is better
-                    if self.isIndividualBetter(individual, worstInd, population):
+                    if self.getIndividualClass().isBetter(individual,
+                                                          worstInd,
+                                                          population):
                         if noDupl:
                             for indiv in bestPop:
                                 if not indiv.isDuplication(individual):
@@ -681,7 +649,7 @@ class PYGA_StandardGenAlgBehavior(PYGA_GenAlgBehavior):
     # ----------------------
     # Private - Get average fitness of the population
     def __getAverageFitness(self, population):
-        if self.isMultiObj():
+        if self.getIndividualClass().MULTI_OBJ:
             raise PYGA_FitnessComputation('ERROR: Average fitness cannot be computed for multi-objectives individuals...')
         fitSum = 0.0
         for indiv in population:

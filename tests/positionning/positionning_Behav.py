@@ -20,17 +20,21 @@ class PositionningBehavior(PYGA_StandardGenAlgBehavior):
     def SET_PLOT_INFO(cls, plotIndiv):
         cls.__PLOT_METHOD = staticmethod(plotIndiv)
     
-    @classmethod
-    def endOfGeneration(cls, population, iGeneration, endOfRun, infoStr):
+    def endOfGeneration(self, population, iGeneration, endOfRun, infoStr):
         sortedPop = population.getBestIndividual(4)
                 
-        cls.__PLOT_METHOD(sortedPop[0], 1)
-        cls.__PLOT_METHOD(sortedPop[1], 2)
-        cls.__PLOT_METHOD(sortedPop[2], 3)
-        cls.__PLOT_METHOD(sortedPop[3], 4)
+        self.__PLOT_METHOD(sortedPop[0], 1)
+        self.__PLOT_METHOD(sortedPop[1], 2)
+        self.__PLOT_METHOD(sortedPop[2], 3)
+        self.__PLOT_METHOD(sortedPop[3], 4)
             
-        
-    @classmethod
-    def stopCriteria(cls, population, iGeneration, infoStr):
-        return population.getBestIndividual().getFitness() == 0.0
+
+    def stopCriteria(self, population, iGeneration, startTime, infoStr):
+        percent, stop = PYGA_StandardGenAlgBehavior.stopCriteria(self,
+                                                                 population,
+                                                                 iGeneration,
+                                                                 startTime,
+                                                                 infoStr)
+        ownCriteria = population.getBestIndividual().getFitness() == 0.0
+        return percent, stop or ownCriteria
         

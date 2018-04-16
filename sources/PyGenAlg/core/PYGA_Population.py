@@ -1,56 +1,105 @@
-# -*- mode: python; py-indent-offset: 4; tab-width: 4; coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
+"""
+Python Genetic Algorithm module.
 
-#######################################################################
-# Author: Deau Rapha�l
-#
-# Copyright 2011 - 2016
-# License: Creative Commons Attribution Non-commercial 4.0
-# Full text: https://creativecommons.org/licenses/by-nc/4.0/legalcode
-#
-#######################################################################
+This file contains the base class of the population of the GA: PYGA_Population.
+It defines how the GA manages its population (list of individuals).
 
-#-----------------------
-#
-# Start date: 18/07/2011
-#
-#-----------------------
+License full text: https://creativecommons.org/licenses/by-nc/4.0/legalcode
 
+
+
+Modification History:
+**** 18/07/2011 ****
+Creation
+**** 29/09/2016 ****
+Global:
+- PEP8 update
+- Docstring
+- Meta data
+**** 06/10/2016 ****
+- Docstring
+TODO: complete the list
+
+TODO List:
+-
+"""
 # - Build-in imports -
-import os, random
-
+from os.path import isfile
+from random import sample
 from multiprocessing import Pipe
+from sys import version_info
 
+# - Local imports -
 from PyGenAlg.core.PYGA_Exceptions import PYGA_PopulationError
 
-from sys import version_info
+# Manage python versions compatibility
 if version_info[0] >= 3:
     xrange = range
 
+# Meta information
+__author__ = "Raphaël Deau"
+__copyright__ = "Copyright 2016, Raphaël Deau"
+__license__ = "Creative Commons Attribution Non-commercial 4.0"
+__version__ = "1.0.0"
+__since__ = "18/07/2011"
+__date__ = "06/10/2016"
+
+
 class PYGA_Population:
-   
+    """
+    This class is the base for the GA Population coding.
+    It allows defining:
+        - TODO:
+
+    A "standard behavior and parameters set" is provided in PYGA_StandardGenAlgBehavior.
+
+    Attributes:
+        :ivar __individuals: The individuals of the population.
+        :type __individuals: list of subclass of PYGA_Individual
+        :ivar __uncaughtIndividuals: All "unselected" individuals
+        :type __uncaughtIndividuals: list of subclass of PYGA_Individual
+        :ivar __printMethod: The method to call to print logs.
+        :type __printMethod: callable
+        :ivar __behaviorInstance: The behavior of the GA.
+        :type __behaviorInstance: subclass of PYGA_GenAlgBehavior
+        :ivar __individualClass: The individual class to use.
+        :type __individualClass: T <= PYGA_Individual
+    """
     # ==================
     # v Public methods v
     # ==================
 
-    # ----------------------
-    # Public - Constructor
-    def __init__(self, IndividualClass, behaviorInstance, debugMode, outputPrint):
-        self.__individuals = []
-        self.__uncatchedIndividuals = []
-        self.__debugMode = debugMode
-        self._outputPrint = outputPrint
-        
-        self.__behaviorInstance = behaviorInstance
-        
-        self.__individualClass = IndividualClass
-    # Public - End of Constructor
-    # ----------------------
+    def __init__(self, IndividualClass, behaviorInstance, printMethod):
+        """
+        Constructor of the population.
 
-    # ----------------------
-    # Private - Generate initial population
-    def __generateInitPop(self, nbIndividuals, noDuplication=False, infoStr=''):
+        :param IndividualClass: The class used as individual to store in the population.
+        :type IndividualClass: Python class
+        :param behaviorInstance: The instance of the behavior of the GA.
+        :type behaviorInstance: Derived from PYGA_GenAlgBehavior
+        :param printMethod: The method to call to print logs.
+        :type printMethod: Python method
+        """
         self.__individuals = []
-        self.__uncatchedIndividuals = []
+        self.__uncaughtIndividuals = []
+        self.__printMethod = printMethod
+        self.__behaviorInstance = behaviorInstance
+        self.__individualClass = IndividualClass
+
+    def __generateInitPop(self, nbIndividuals, noDuplication=False, infoStr=''):
+        """
+        Generates the initial population according to a number of desired individuals.
+
+        :param nbIndividuals: The number of individual to create.
+        :type nbIndividuals: int
+        :param noDuplication: Whether individuals can be duplicated or not.
+        :type noDuplication: bool
+        :param infoStr: The log string to concatenate.
+        :type infoStr: str
+        """
+        self.__individuals = []
+        self.__uncaughtIndividuals = []
         while len(self.__individuals) < nbIndividuals:
             newInd = self.__individualClass.generate()
             add= True
@@ -62,14 +111,10 @@ class PYGA_Population:
                         add=False
                     i += 1
             if add:
-                self.__uncatchedIndividuals.append(newInd)
+                self.__uncaughtIndividuals.append(newInd)
                 self.__individuals.append(newInd)
                 infoStr2 = infoStr + ' Initialisation: ' + str(len(self.__individuals)) + '/'+str(nbIndividuals)+' generated.'
-                self._outputPrint.write(infoStr2)
-                self._outputPrint.flush()
-    # Private - End of Generate initial population
-    # ----------------------
-
+                self.__printMethod(infoStr2)
 
     # ----------------------
     # Public - Generate initial population
@@ -84,7 +129,7 @@ class PYGA_Population:
     # Public - Add individual
     def addIndividual(self, individual):
         self.__individuals.append(individual)
-        self.__uncatchedIndividuals.append(individual)
+        self.__uncaughtIndividuals.append(individual)
     # ----------------------
 
     # ----------------------
@@ -100,8 +145,8 @@ class PYGA_Population:
             raise PYGA_PopulationError('ERROR: cannot remove individual from the population (individual not found).')
         self.__individuals.pop(iInd)
         try:
-            iInd = self.__uncatchedIndividuals.index(individual)
-            self.__uncatchedIndividuals.pop(iInd)
+            iInd = self.__uncaughtIndividuals.index(individual)
+            self.__uncaughtIndividuals.pop(iInd)
         except:
             pass
     # Public - End of Remove individual
@@ -133,7 +178,7 @@ class PYGA_Population:
     # Public - Load population
     def loadPopulation(self, fileName):
         # 1- Check fileName
-        if fileName is None or not os.path.isfile(fileName):
+        if fileName is None or not isfile(fileName):
             error = 'ERROR: population file '+str(fileName)+' is not an existing file.\n'
             raise PYGA_PopulationError(error)
         # 2- Empty current population
@@ -160,9 +205,9 @@ class PYGA_Population:
     # ----------------------
     # Public - Duplicate
     def duplicate(self):
-        newPop = self.__class__(self.__individualClass, self.__behaviorInstance, self.__debugMode, self._outputPrint)
+        newPop = self.__class__(self.__individualClass, self.__behaviorInstance, self.__printMethod)
         newPop.__individuals = list(self.__individuals)
-        newPop.__uncatchedIndividuals = list(self.__individuals)
+        newPop.__uncaughtIndividuals = list(self.__individuals)
         return newPop
     # ----------------------
 
@@ -171,7 +216,7 @@ class PYGA_Population:
     def merge(self, population, duplicate=False):
         for individual in population:
             self.__individuals.append(individual)
-            self.__uncatchedIndividuals.append(individual)
+            self.__uncaughtIndividuals.append(individual)
     # ----------------------
 
     def getDuplicationPercent(self):
@@ -220,7 +265,7 @@ class PYGA_Population:
         return clusters
     
     def removeRandomIndiv(self, nbIndiv):
-        indivs = random.sample(self.__individuals, nbIndiv)
+        indivs = sample(self.__individuals, nbIndiv)
         for indiv in indivs:
             self.removeIndividual(indiv)
             
@@ -238,11 +283,11 @@ class PYGA_Population:
         parent1 = None
         if not useTwice:
             # Get parents in "uncatched" list
-            if len(self.__uncatchedIndividuals) > 1:
-                indList = self.__uncatchedIndividuals
-            elif len(self.__uncatchedIndividuals) == 1:
+            if len(self.__uncaughtIndividuals) > 1:
+                indList = self.__uncaughtIndividuals
+            elif len(self.__uncaughtIndividuals) == 1:
                 # If only one parent uncatched, take it and pick another randomly
-                parent1 = self.__uncatchedIndividuals[0]
+                parent1 = self.__uncaughtIndividuals[0]
         
         # 3- Get random parents
         if parent1 is None:
@@ -255,19 +300,19 @@ class PYGA_Population:
         
         # 4- Update the list of catched parents
         try:
-            iInd = self.__uncatchedIndividuals.index(parent1)
-            self.__uncatchedIndividuals.pop(iInd)
+            iInd = self.__uncaughtIndividuals.index(parent1)
+            self.__uncaughtIndividuals.pop(iInd)
         except:
             pass
         try:
-            iInd = self.__uncatchedIndividuals.index(parent2)
-            self.__uncatchedIndividuals.pop(iInd)
+            iInd = self.__uncaughtIndividuals.index(parent2)
+            self.__uncaughtIndividuals.pop(iInd)
         except:
             pass
 
         # 5- If all individuals have been chosen at least one time, reset uncatched list
-        if len(self.__uncatchedIndividuals) == 0:
-            self.__uncatchedIndividuals = list(self.__individuals)
+        if len(self.__uncaughtIndividuals) == 0:
+            self.__uncaughtIndividuals = list(self.__individuals)
 
         return parent1, parent2
     # Public - End of Get random parents
@@ -326,13 +371,11 @@ class PYGA_Population:
             nbIndivEvaluated = 0
             for indiv in self.__individuals:
                 infoStr2 = infoStr + ' Evaluated individuals: ' + str(nbIndivEvaluated) + '/' + str(nbIndivToComp)
-                self._outputPrint.write(infoStr2)
-                self._outputPrint.flush()
+                self.__printMethod(infoStr2)
                 if indiv.computeObjectives(self):
                     nbIndivEvaluated += 1
                 infoStr2 = infoStr + ' Evaluated individuals: ' + str(nbIndivEvaluated) + '/' + str(nbIndivToComp)
-                self._outputPrint.write(infoStr2)
-                self._outputPrint.flush()
+                self.__printMethod(infoStr2)
         # 2- Parallel computing
         else:
             # 2.1- Store process list and pipes
@@ -360,28 +403,26 @@ class PYGA_Population:
                     nbIndivLaunched += 1
                 infoStr2 = infoStr + ' Evaluating individuals: ' + str(nbIndivLaunched) + '/' + str(nbIndivToComp) + ' launched, '
                 infoStr3 = infoStr2 + str(nbIndivDone) + ' Done.    '
-                self._outputPrint.write(infoStr3)
-                self._outputPrint.flush()
-                
+                self.__printMethod(infoStr3)
+
             # 2.4- Wait for computing obectives
             i = 0
             infoStr3 = infoStr2 + str(nbIndivDone) + ' Done.     '
-            self._outputPrint.write(infoStr3)
-            self._outputPrint.flush()
+            self.__printMethod(infoStr3)
             while len(processList) > 0:
                 if not self.__checkProcessEnd(i, parentPipe, processList):
                     i += 1
                 else:
                     nbIndivDone += 1
                     infoStr3 = infoStr2 + str(nbIndivDone) + ' Done.    '
-                    self._outputPrint.write(infoStr3)
-                    self._outputPrint.flush()
+                    self.__printMethod(infoStr3)
                 if i != 0:
                     i %= len(processList)
 
         # 3- For multi obj, call fitness function (obj have been computed)
         if self.__individualClass.MULTI_OBJ:
             self.__individualClass.computeMultiObjFitness(self)
+        return nbIndivToComp
     # Public - End of Get bet individual
     # ----------------------
 
@@ -425,7 +466,7 @@ class PYGA_Population:
     def __del__(self):
         for ind in self.__individuals:
             del ind
-        self.__uncatchedIndividuals = []
+        self.__uncaughtIndividuals = []
         self.__individualClass = None
     # ----------------------
 

@@ -179,6 +179,7 @@
         <Category>"General.Initial population.From file"</Category>
         <Description>"Loading initial population from file"</Description>
         <Check_Method>def checkPopFile(self, popFile):
+    import os
     if type(popFile) != type(''):
         error = 'ERROR: Population file must be a string.\n'
         raise PYGA_ParametersError(error)
